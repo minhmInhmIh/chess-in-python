@@ -3,7 +3,7 @@ class GameState():
         self.board = [
             ["bR","bN","bB","bQ","bK","bB","bN","bR"],
             ["bp","bp","bp","bp","bp","bp","bp","bp"],
-            ["--","--","--","wp","--","--","--","--"],
+            ["--","--","--","--","--","--","--","--"],
             ["--","--","--","--","--","--","--","--"],
             ["--","--","--","--","--","--","--","--"],
             ["--","--","--","--","--","--","--","--"],
@@ -23,41 +23,9 @@ class GameState():
             self.board[move.oldRow][move.oldCol] = move.movedPiece
             self.board[move.newRow][move.newCol] = move.capturedPiece
             self.whiteToMove = not self.whiteToMove
-    def getValidMove(self):
-        return self.getAllMove()       
-    def getAllMove(self):
-        moves = []
-        for r in range(len(self.board)):
-            for c in range(len(self.board[r])):    
-                team = self.board[r][c][0]
-                if (team == "w" and self.whiteToMove) or (team == "b" and not self.whiteToMove):
-                    piece = self.board[r][c][1]
-                    if piece == "p":
-                        self.getPawnMove(r, c, moves)
-        return moves
-    def getPawnMove(self,r, c, moves):
-        if self.whiteToMove:
-            if self.board[r-1][c] == "--":
-                moves.append(Move((r, c),(r-1,c), self.board))
-                if r == 6 and self.board[r-2][c] == "--":
-                    moves.append(Move((r,c),(r-2,c), self.board))
-            if c-1 >=0:
-                if self.board[r-1][c-1][0] == "b":
-                    moves.append(Move((r,c),(r-1,c-1), self.board))
-            if c+1 <= 7:
-                if self.board[r-1][c+1][0] == "b":
-                    moves.append(Move((r,c),(r-1,c+1), self.board))
-        else:
-            if self.board[r+1][c] == "--":
-                moves.append(Move((r,c),(r+1,c), self.board))
-                if r == 1 and self.board[r+2][c] == "--":
-                    moves.append(Move((r,c),(r+2,c), self.board))
-            if c-1 >=0:
-                if self.board[r+1][c-1][0] == "w":
-                    moves.append(Move((r,c),(r+1,c-1), self.board))
-            if c+1 <= 7:
-                if self.board[r+1][c+1][0] == "w":
-                    moves.append(Move((r,c),(r+1,c+1), self.board))
+    def isValidMove(self,move):
+        pass               
+
 class Move():
 
     ranksToRows = {
@@ -92,11 +60,6 @@ class Move():
         self.newCol = newPos[1]
         self.movedPiece = board[self.oldRow][self.oldCol]
         self.capturedPiece = board[self.newRow][self.newCol]
-        self.moveID = self.oldRow * 1000 + self.oldCol * 100 + self.newRow * 10 + self.newCol
-    def __eq__(self, other):
-        if isinstance(other, Move):
-            return self.moveID == other.moveID
-        return False
     def getChessNotation(self):
         return self.getFileAndRank(self.oldRow, self.oldCol) + self.getFileAndRank(self.newRow, self.newCol)
     def getFileAndRank(self,r,c):

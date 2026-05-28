@@ -25,7 +25,8 @@ def main(window):
     
     clock = pygame.time.Clock()
     gameState = ChessEngine.GameState()
-    
+    validMoves = gameState.getValidMove()
+    moveMade = False
     loadImages()
     running = True
 
@@ -50,12 +51,18 @@ def main(window):
                 if len(playerClicks) == 2:
                     move = ChessEngine.Move(playerClicks[0],playerClicks[1],gameState.board)
                     print(move.getChessNotation())
-                    gameState.makeMove(move)
+                    if move in validMoves:
+                        gameState.makeMove(move)
+                        moveMade = True
                     sqSelected = ()
                     playerClicks = []
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    gameState.undoMove(move)
+                    gameState.undoMove()
+                    moveMade = True
+        if moveMade:
+            validMoves = gameState.getValidMove()
+            moveMade = False
         draw(window, gameState)
         
 #draw whats happening in game
